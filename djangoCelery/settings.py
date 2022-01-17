@@ -180,3 +180,24 @@ CELERY_BEAT_SCHEDULE = {
 
 # 如果每次添加或修改周期性任务都要修改配置文件非常不方便，一个更好的方式是使用任务调度器。先在settings.py中将任务调度器设为DatabaseScheduler
 # CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+# 配置多队列
+from kombu import Queue, Exchange
+
+CELERY_TASK_DEFAULT_QUEUE = 'default'
+CELERY_TASK_DEFAULT_ROUTING_KEY = 'default'
+CELERY_QUEUES = (
+    Queue('default', Exchange('default'), routing_key='default'),
+    Queue('heavy_tasks', Exchange('heavy_tasks'), routing_key='heavy_tasks'),
+)
+CELERY_TASK_ROUTES = {
+    'myapp.tasks.heave_tasks': 'heavy_tasks'
+}
+
+# 路由（哪个任务放入哪个队列）
+CELERY_ROUTES = {   # app.tasks.add这个任务进去add队列并routeing_key为xue.add
+    'app.tasks.add': {
+        'queue': 'default',
+        'routing_key': 'default',
+    }
+}
