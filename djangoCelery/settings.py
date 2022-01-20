@@ -169,12 +169,13 @@ CELERY_BEAT_SCHEDULE = {
     "add-every-30s": {
         "task": "app.tasks.add",
         'schedule': 30.0,  # 每30秒执行1次
-        'args': (3, 8)  # 传递参数-
+        'args': (3, 8),  # 传递参数
+        'options': {'queue': 'default'}
     },
     "add-every-day": {
         "task": "app.tasks.add",
         'schedule': timedelta(hours=1),  # 每小时执行1次
-        'args': (3, 6)  # 传递参数-
+        'args': (3, 6)  # 传递参数
     },
 }
 
@@ -191,13 +192,13 @@ CELERY_QUEUES = (
     Queue('heavy_tasks', Exchange('heavy_tasks'), routing_key='heavy_tasks'),
 )
 CELERY_TASK_ROUTES = {
-    'myapp.tasks.heave_tasks': 'heavy_tasks'
+    'app.tasks.heave_tasks': 'heavy_tasks'
 }
 
-# 路由（哪个任务放入哪个队列）
-CELERY_ROUTES = {   # app.tasks.add这个任务进去add队列并routeing_key为xue.add
-    'app.tasks.add': {
-        'queue': 'default',
-        'routing_key': 'default',
-    }
-}
+# # 路由（哪个任务放入哪个队列）
+# CELERY_ROUTES = {   # app.tasks.add这个任务进去add队列并routeing_key为xue.add
+#     'app.tasks.add': {
+#         'queue': 'default',
+#         'routing_key': 'default',
+#     }
+# }
